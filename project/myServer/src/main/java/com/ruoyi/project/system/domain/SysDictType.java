@@ -31,7 +31,7 @@ public class SysDictType extends BaseEntity
     private String dictType;
 
     /** 状态（0正常 1停用） */
-    @Excel(name = "状态", readConverterExp = "0=正常,1=停用")
+    @Excel(name = "在職状态", readConverterExp = "0=在職,1=退社")
     private String status;
 
     public Long getDictId()

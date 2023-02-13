@@ -1,63 +1,38 @@
 <template>
-  <video class="myVideo" src="../assets/video/backgroundVideo.mp4" autoplay playsinline muted loop>
-  </video>
   <div class=" login">
+    <video class="myVideo" src="../assets/video/backgroundVideo.mp4" autoplay playsinline muted loop>
+    </video>
     <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
       <h3 class="title">OGM社内管理系统</h3>
       <el-form-item prop="username">
-        <el-input
-          v-model="loginForm.username"
-          type="text"
-          size="large"
-          auto-complete="off"
-          placeholder="请输入您的账户号码"
-        >
+        <el-input v-model="loginForm.username" type="text" size="large" auto-complete="off" placeholder="请输入您的账户号码">
           <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          size="large"
-          auto-complete="off"
-          placeholder="请输入您的账户密码"
-          @keyup.enter="handleLogin"
-        >
+        <el-input v-model="loginForm.password" type="password" size="large" auto-complete="off" placeholder="请输入您的账户密码"
+          @keyup.enter="handleLogin">
           <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
         </el-input>
       </el-form-item>
       <el-form-item prop="code" v-if="captchaEnabled">
-        <el-input
-          v-model="loginForm.code"
-          size="large"
-          auto-complete="off"
-          placeholder="验证码"
-          style="width: 265px
-          "
-          @keyup.enter="handleLogin"
-        >
+        <el-input v-model="loginForm.code" size="large" auto-complete="off" placeholder="验证码" style="width: 265px
+          " @keyup.enter="handleLogin">
           <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
         </el-input>
         <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          <img :src="codeUrl" @click="getCode" class="login-code-img" />
         </div>
       </el-form-item>
       <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+      <el-label style="display: inline-block;" v-if="!register">
+        <router-link class="link-type" :to="'/register'">立即注册</router-link>
+      </el-label>
       <el-form-item style="width:100%;">
-        <el-button
-          :loading="loading"
-          size="large"
-          type="primary"
-          style="width:100%;"
-          @click.prevent="handleLogin"
-        >
+        <el-button :loading="loading" size="large" type="primary" style="width:100%;" @click.prevent="handleLogin">
           <span v-if="!loading">登 录</span>
           <span v-else>登 录 中...</span>
         </el-button>
-        <div style="float: right;" v-if="register">
-          <router-link class="link-type" :to="'/register'">立即注册</router-link>
-        </div>
       </el-form-item>
     </el-form>
     <!--  底部  -->
@@ -93,15 +68,15 @@ const codeUrl = ref("");
 const loading = ref(false);
 // 验证码开关
 const captchaEnabled = ref(true);
-const register = ref(false);
+const register = ref(true);
 const redirect = ref(undefined);
 
 function handleLogin() {
   proxy.$refs.loginRef.validate(valid => {
     if (valid) {
       loading.value = true;
-            // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
-            if (loginForm.value.rememberMe) {
+      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+      if (loginForm.value.rememberMe) {
         Cookies.set("username", loginForm.value.username, { expires: 30 });
         Cookies.set("password", encrypt(loginForm.value.password), { expires: 30 });
         Cookies.set("rememberMe", loginForm.value.rememberMe, { expires: 30 });
@@ -116,8 +91,8 @@ function handleLogin() {
         router.push({ path: redirect.value || "/" });
       }).catch(() => {
         loading.value = false;
-                // 重新获取验证码
-                if (captchaEnabled.value) {
+        // 重新获取验证码
+        if (captchaEnabled.value) {
           getCode();
         }
       });
@@ -151,20 +126,23 @@ getCookie();
 </script>
 
 <style lang='scss' scoped>
-.myVideo{
-    z-index: 0;
-    position: absolute;
-    width:100vw
+.myVideo {
+  height: 134vh;
+  width: max-content;
+  z-index: 0;
+  position: absolute;
 }
+
 .login {
-  overflow-y:hidden;
-  min-height: 100%;
+  margin: 0;
+  overflow-y: hidden;
+  max-height: 80%;
   display: flex;
   justify-content: center;
   align-items: center;
-  background-image: url("../assets/images/login-background.jpg");
   background-size: cover;
 }
+
 .title {
   margin: 0px auto 30px auto;
   text-align: center;
@@ -172,38 +150,46 @@ getCookie();
 }
 
 .login-form {
+  margin-top: 100px;
   z-index: 999999;
-  border-radius: 6px;
+  border-radius: 20px;
   background: #ffffff;
   width: 450px;
   height: fit-content;
   padding: 25px 25px 5px 25px;
+
   .el-input {
     height: 40px;
+
     input {
       height: 40px;
     }
   }
+
   .input-icon {
     height: 39px;
     width: 14px;
     margin-left: 0px;
   }
 }
+
 .login-tip {
   font-size: 13px;
   text-align: center;
   color: #bfbfbf;
 }
+
 .login-code {
   width: 33%;
   height: 40px;
   float: right;
+
   img {
     cursor: pointer;
     vertical-align: middle;
   }
 }
+
 .el-login-footer {
   height: 40px;
   line-height: 40px;
@@ -216,9 +202,9 @@ getCookie();
   font-size: 12px;
   letter-spacing: 1px;
 }
+
 .login-code-img {
   height: 40px;
   padding-left: 12px;
 }
-
 </style>
